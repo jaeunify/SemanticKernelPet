@@ -1,17 +1,17 @@
 @page "/create-pet"
 @using SemanticKernelService
 @rendermode InteractiveServer
-@inject ITextToTextService TextService
+@inject ITextToImageService ImageService
 
 <h3>나만의 펫 만들기 (Create Your Own Pet)</h3>
 
 <p>원하는 펫을 자세히 묘사해주세요. 생성된 펫은 홈 화면에 나타납니다.</p>
 <textarea @bind="petDescription" placeholder="예: 꽃밭에서 놀고 있는 솜털같은 골든 리트리버 강아지" rows="4" style="width: 100%;"></textarea>
-<button class="btn btn-primary" @onclick="GeneratePetDescription" disabled="@isGenerating">
+<button class="btn btn-primary" @onclick="GeneratePetImage" disabled="@isGenerating">
     @if (isGenerating)
     {
         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-        <span>설명 만드는 중...</span>
+        <span>만드는 중...</span>
     }
     else
     {
@@ -19,11 +19,11 @@
     }
 </button>
 
-@if (!string.IsNullOrWhiteSpace(generatedDescription))
+@if (!string.IsNullOrWhiteSpace(generatedImageUrl))
 {
     <div class="mt-4">
         <h4>새로운 펫! (Your New Pet!)</h4>
-        <p>@generatedDescription</p>
+        <img src="@generatedImageUrl" alt="Generated Pet Image" class="img-fluid rounded" style="max-width: 512px; max-height: 512px;" />
     </div>
 }
 
@@ -37,11 +37,11 @@
 
 @code {
     private string? petDescription;
-    private string? generatedDescription;
+    private string? generatedImageUrl;
     private bool isGenerating = false;
     private string? errorMessage;
 
-    private async Task GeneratePetDescription()
+    private async Task GeneratePetImage()
     {
         if (string.IsNullOrWhiteSpace(petDescription))
         {
@@ -50,26 +50,21 @@
         }
 
         isGenerating = true;
-        generatedDescription = null;
+        generatedImageUrl = null;
         errorMessage = null;
 
         try
         {
-            // Create a specific prompt for the chat service to generate a rich description.
-            var prompt = $"Please create a vivid and imaginative description of the following pet: '{petDescription}'. Describe its appearance, personality, and a special magical ability it might have. The description should be engaging and make me want to meet this pet.";
-            var response = await TextService.SendAsync(prompt);
-            generatedDescription = response.Content;
+            generatedImageUrl = await ImageService.GenerateImageAsync(petDescription);
         }
         catch
         {
             // In a real app, log this exception
-            errorMessage = "펫에 대한 설명을 생성하지 못했습니다. 잠시 후 다시 시도해주세요.";
+            errorMessage = "이미지 생성에 실패했습니다. 잠시 후 다시 시도해주세요.";
         }
         finally
         {
             isGenerating = false;
-            // Reset chat history if this service is shared and stateful
-            TextService.Reset(); 
         }
     }
 }

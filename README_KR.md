@@ -1,6 +1,6 @@
 # 시맨틱 커널 펫키우기 시뮬레이션 (Semantic Kernel Pet)
 
-본 프로젝트는 Microsoft Semantic Kernel을 활용하여 AI 펫과 대화하고, AI가 생성해주는 풍부한 설명을 통해 새로운 펫을 만나는 시뮬레이션 프로토타입입니다. Blazor Server 웹 애플리케이션으로 제작되어, 서버와 클라이언트의 역할을 동시에 수행합니다.
+본 프로젝트는 Microsoft Semantic Kernel을 활용하여 AI 펫과 대화하고, Gemini API를 직접 호출하여 이미지를 생성하는 펫 시뮬레이션 프로토타입입니다. Blazor Server 웹 애플리케이션으로 제작되어, 서버와 클라이언트의 역할을 동시에 수행합니다.
 
 ### Other Language  
 
@@ -8,27 +8,32 @@
 
 ## 프로젝트 소개
 
-이 애플리케이션은 사용자가 AI 펫과 자유롭게 대화할 수 있도록 설계되었습니다. 또한, 사용자가 원하는 펫을 묘사하면 강력한 AI 모델이 그에 대한 상세하고 상상력 풍부한 설명을 생성해줍니다. 대화와 텍스트 생성은 모두 Semantic Kernel을 통해 관리됩니다.
+이 애플리케이션은 사용자가 AI 펫과 자유롭게 대화하고, 원하는 펫을 생성할 수 있도록 설계되었습니다.
+-   **대화**: Semantic Kernel을 통해 관리되며, Gemini 텍스트 생성 모델이 펫의 응답을 생성합니다.
+-   **이미지 생성**: 사용자가 원하는 펫을 묘사하면, Gemini 이미지 생성 API를 직접 HTTP 호출하여 해당 펫의 이미지를 생성하고 사용자에게 보여줍니다.
 
 ## 주요 기능
 
 -   **AI 기반 대화**: Semantic Kernel을 이용해 자연스러운 AI 펫과의 대화를 구현합니다.
--   **동적 텍스트 생성**: 사용자 입력을 바탕으로 고유하고 풍부한 펫 관련 설명을 생성합니다.
+-   **동적 이미지 생성**: Gemini API 직접 호출을 통해 사용자 묘사에 기반한 고유한 펫 이미지를 생성합니다.
 -   **통합 환경**: Blazor Server를 사용하여 백엔드의 AI 로직 처리와 프론트엔드의 UI 렌더링을 하나의 프로젝트에서 관리합니다.
 
 ## 기술 스택
 
 -   **프레임워크**: .NET, Blazor Server
--   **AI 오케스트레이션**: Microsoft Semantic Kernel
+-   **AI 상호작용**:
+    -   **대화**: Microsoft Semantic Kernel (AI 오케스트레이션)
+    -   **이미지 생성**: `HttpClient`를 이용한 Gemini REST API 직접 호출
 -   **AI 모델**:
-    -   텍스트 생성을 위한 Google Gemini 모델 (예: `gemini-1.5-pro`)
+    -   Google Gemini Pro (텍스트 생성용)
+    -   Google Imagen (이미지 생성용, 모델명은 API 문서에 따라 지정 필요)
 
 ## 시작하기
 
 ### 준비물
 
 -   [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) 이상
--   Google AI Gemini API 키
+-   Google AI Gemini API 키 (텍스트 및 이미지 생성 권한 필요)
 
 ### 설치 및 실행
 
