@@ -6,6 +6,8 @@ using Microsoft.SemanticKernel.Connectors.OpenAI;
 using SemanticKernelPet.Components;
 using SemanticKernelService;
 
+#pragma warning disable SKEXP0010
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -13,14 +15,16 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 // semantic kernel
+// Gemini for Chat
 var geminiApiKey = builder.Configuration["Gemini:ApiKey"] ?? throw new Exception("Gemini:ApiKey is not set in configuration");
+
 builder.Services.AddKernel()
     .AddGoogleAIGeminiChatCompletion(
         modelId: "gemini-1.5-pro-002",   // 또는 "gemini-1.5-flash-002"
         apiKey: geminiApiKey
     );
 
-builder.Services.AddSingleton<IGeminiSemanticKernelService, GeminiSemanticKernelService>();
+builder.Services.AddSingleton<ITextToTextService, TextToTextService>();
 
 var app = builder.Build();
 

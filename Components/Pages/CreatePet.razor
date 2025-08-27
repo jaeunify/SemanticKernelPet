@@ -1,0 +1,75 @@
+@page "/create-pet"
+@using SemanticKernelService
+@rendermode InteractiveServer
+@inject ITextToTextService TextService
+
+<h3>나만의 펫 만들기 (Create Your Own Pet)</h3>
+
+<p>원하는 펫을 자세히 묘사해주세요. 생성된 펫은 홈 화면에 나타납니다.</p>
+<textarea @bind="petDescription" placeholder="예: 꽃밭에서 놀고 있는 솜털같은 골든 리트리버 강아지" rows="4" style="width: 100%;"></textarea>
+<button class="btn btn-primary" @onclick="GeneratePetDescription" disabled="@isGenerating">
+    @if (isGenerating)
+    {
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        <span>설명 만드는 중...</span>
+    }
+    else
+    {
+        <span>만나기 (Meet)</span>
+    }
+</button>
+
+@if (!string.IsNullOrWhiteSpace(generatedDescription))
+{
+    <div class="mt-4">
+        <h4>새로운 펫! (Your New Pet!)</h4>
+        <p>@generatedDescription</p>
+    </div>
+}
+
+@if (!string.IsNullOrWhiteSpace(errorMessage))
+{
+    <div class="alert alert-danger mt-4" role="alert">
+        @errorMessage
+    </div>
+}
+
+
+@code {
+    private string? petDescription;
+    private string? generatedDescription;
+    private bool isGenerating = false;
+    private string? errorMessage;
+
+    private async Task GeneratePetDescription()
+    {
+        if (string.IsNullOrWhiteSpace(petDescription))
+        {
+            errorMessage = "펫에 대한 묘사를 입력해주세요.";
+            return;
+        }
+
+        isGenerating = true;
+        generatedDescription = null;
+        errorMessage = null;
+
+        try
+        {
+            // Create a specific prompt for the chat service to generate a rich description.
+            var prompt = $"Please create a vivid and imaginative description of the following pet: '{petDescription}'. Describe its appearance, personality, and a special magical ability it might have. The description should be engaging and make me want to meet this pet.";
+            var response = await TextService.SendAsync(prompt);
+            generatedDescription = response.Content;
+        }
+        catch
+        {
+            // In a real app, log this exception
+            errorMessage = "펫에 대한 설명을 생성하지 못했습니다. 잠시 후 다시 시도해주세요.";
+        }
+        finally
+        {
+            isGenerating = false;
+            // Reset chat history if this service is shared and stateful
+            TextService.Reset(); 
+        }
+    }
+}
