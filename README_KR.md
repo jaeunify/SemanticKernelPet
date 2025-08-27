@@ -1,4 +1,4 @@
-# 시맨틱 커널 데이팅 심 (Semantic Kernel Dating Sim)
+# 시맨틱 커널 미소녀 연애 시뮬레이션 (Semantic Kernel Dating Sim)
 
 본 프로젝트는 Microsoft Semantic Kernel을 활용하여 AI 캐릭터와 대화하고, 대화 내용에 기반한 이미지를 생성하는 간단한 데이팅 시뮬레이션 프로토타입입니다. Blazor Server 웹 애플리케이션으로 제작되어, 서버와 클라이언트의 역할을 동시에 수행합니다.
 

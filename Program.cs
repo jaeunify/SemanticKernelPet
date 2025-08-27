@@ -1,10 +1,26 @@
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.ChatCompletion;
+using Microsoft.SemanticKernel.Connectors.OpenAI;
 using SemanticKernelDatingSim.Components;
+using SemanticKernelService;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+// semantic kernel
+var geminiApiKey = builder.Configuration["Gemini:ApiKey"] ?? throw new Exception("Gemini:ApiKey is not set in configuration");
+builder.Services.AddKernel()
+    .AddGoogleAIGeminiChatCompletion(
+        modelId: "gemini-1.5-pro-002",   // 또는 "gemini-1.5-flash-002"
+        apiKey: geminiApiKey
+    );
+
+builder.Services.AddSingleton<IGeminiSemanticKernelService, GeminiSemanticKernelService>();
 
 var app = builder.Build();
 
