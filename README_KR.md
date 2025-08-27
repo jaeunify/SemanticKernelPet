@@ -1,4 +1,4 @@
-# 시맨틱 커널 미소녀 연애 시뮬레이션 (Semantic Kernel Dating Sim)
+# 시맨틱 커널 펫키우기 시뮬레이션 (Semantic Kernel Pet)
 
 본 프로젝트는 Microsoft Semantic Kernel을 활용하여 AI 캐릭터와 대화하고, 대화 내용에 기반한 이미지를 생성하는 간단한 데이팅 시뮬레이션 프로토타입입니다. Blazor Server 웹 애플리케이션으로 제작되어, 서버와 클라이언트의 역할을 동시에 수행합니다.
 
@@ -8,9 +8,9 @@
 
 ## 프로젝트 소개
 
-이 애플리케이션은 사용자가 AI 캐릭터와 자유롭게 대화를 나누는 '데이트'를 경험할 수 있도록 설계되었습니다. 대화는 Semantic Kernel을 통해 관리되며, 텍스트 생성 AI 모델(Text-to-Text)이 캐릭터의 응답을 생성합니다.
+이 애플리케이션은 사용자가 AI 펫과 자유롭게 대화, 산책할 수 있도록 설계되었습니다. 대화는 Semantic Kernel을 통해 관리되며, 텍스트 생성 AI 모델(Text-to-Text)이 캐릭터의 응답을 생성합니다.
 
-'데이트'가 끝나면, 전체 대화의 맥락을 요약하여 이미지 생성 AI 모델(Text-to-Image)에 전달하고, 그 결과로 두 사람의 '컷씬' 이미지를 생성하여 사용자에게 보여줍니다.
+'산책'이 끝나면, 전체 대화의 맥락을 요약하여 이미지 생성 AI 모델(Text-to-Image)에 전달하고, 그 결과로 두 사람의 '컷씬' 이미지를 생성하여 사용자에게 보여줍니다.
 
 ## 주요 기능
 
@@ -39,8 +39,8 @@
 
 1.  **리포지토리 클론**
     ```bash
-    git clone https://github.com/your-username/SemanticKernelDatingSim.git
-    cd SemanticKernelDatingSim
+    git clone https://github.com/your-username/SemanticKernelPet.git
+    cd SemanticKernelPet
     ```
 
 2.  **AI 서비스 구성**

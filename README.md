@@ -1,6 +1,6 @@
-# Semantic Kernel Dating Sim
+# Semantic Kernel Pet
 
-This project is a simple dating simulation prototype that uses Microsoft Semantic Kernel to converse with an AI character and generate an image based on the conversation. It is built as a Blazor Server web application, serving as both the server and the client.  
+This project is a simple pet simulation prototype that uses Microsoft Semantic Kernel to converse with an AI pet and generate an image based on the conversation. It is built as a Blazor Server web application, serving as both the server and the client.  
 
 ### Other Language  
 
@@ -8,13 +8,13 @@ This project is a simple dating simulation prototype that uses Microsoft Semanti
 
 ## About the Project
 
-This application is designed to allow users to experience a 'date' by having a free-form conversation with an AI character. The conversation is managed by Semantic Kernel, and a Text-to-Text AI model generates the character's responses.
+This application is designed to allow users to interact with an AI pet through free-form conversation and activities like going for a 'walk'. The conversation is managed by Semantic Kernel, and a Text-to-Text AI model generates the pet's responses.
 
-After the 'date' concludes, the context of the entire conversation is summarized and passed to a Text-to-Image AI model. This process generates a 'cutscene' image of the two, which is then displayed to the user.
+After the 'walk' concludes, the context of the entire conversation is summarized and passed to a Text-to-Image AI model. This process generates a 'cutscene' image of the user and the pet, which is then displayed to the user.
 
 ## Key Features
 
--   **AI-Powered Conversations**: Implements natural conversations with an AI character using Semantic Kernel.
+-   **AI-Powered Conversations**: Implements natural conversations with an AI pet using Semantic Kernel.
 -   **Dynamic Image Generation**: Creates a unique 'cutscene' image based on the content and mood of the conversation.
 -   **Integrated Environment**: Manages both backend AI logic processing and frontend UI rendering within a single project using Blazor Server.
 
@@ -39,8 +39,8 @@ After the 'date' concludes, the context of the entire conversation is summarized
 
 1.  **Clone the repository**
     ```bash
-    git clone https://github.com/your-username/SemanticKernelDatingSim.git
-    cd SemanticKernelDatingSim
+    git clone https://github.com/your-username/SemanticKernelPet.git
+    cd SemanticKernelPet
     ```
 
 2.  **Configure AI Service**
