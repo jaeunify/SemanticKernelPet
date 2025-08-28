@@ -43,8 +43,11 @@ public class TextToImageService : ITextToImageService
         http.DefaultRequestHeaders.Add("x-goog-api-key", _apiKey);
 
         var prompt = $@"Generate a single PNG image that matches the following description. 
-                        Return only an image (no text). 
-                        Description: {description}";
+                Return only an image (no text). 
+                Style: 2D pixel art.
+                Subject: a cute pet.
+                Description: {description}";
+
 
         var payload = new
         {
