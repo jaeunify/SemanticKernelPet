@@ -83,8 +83,7 @@ public class TextToImageService : ITextToImageService
         // 여기서는 응답에 base64-encoded 이미지가 포함된 "images" 배열이 있다고 가정합니다.
         // ==================================================================================================
         using var doc = JsonDocument.Parse(jsonResponse);
-        Console.WriteLine(jsonResponse);
-
+        
         // 예시: root.images[0].b64_json
         var candidates = doc.RootElement.GetProperty("candidates");
         if (candidates.GetArrayLength() == 0)
