@@ -4,43 +4,47 @@
 @inject SemanticKernelService.ITextToTextService ChatService
 @inject SemanticKernelService.ITextToImageService ImageService
 
-<h3>My Pet</h3>
+<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; text-align: center;">
+    <h3>My Pet</h3>
 
-@if (!string.IsNullOrWhiteSpace(generatedImageUrl))
-{
-    <div class="mt-4">
-        <img src="@generatedImageUrl" alt="Generated Pet Image" class="img-fluid rounded" style="max-width: 512px; max-height: 512px;" />
+    @if (!string.IsNullOrWhiteSpace(generatedImageUrl))
+    {
+        <div class="mt-4">
+            <img src="@generatedImageUrl" alt="Generated Pet Image" class="img-fluid rounded" style="max-width: 512px; max-height: 512px;" />
+        </div>
+    }
+    else if (isGenerating)
+    {
+        <div class="mt-4">
+            <span class="spinner-border" role="status"></span>
+            <span>Generating your pet...</span>
+        </div>
+    }
+
+
+    @if (!string.IsNullOrWhiteSpace(errorMessage))
+    {
+        <div class="alert alert-danger mt-4" role="alert">
+            @errorMessage
+        </div>
+    }
+
+    <hr class="w-50" />
+
+    <h3>Chat with your Pet</h3>
+    <div class="d-flex justify-content-center w-100 mb-2">
+        <input @bind="input" @onkeyup="Enter" class="w-50" placeholder="메시지" />
+        <button @onclick="Send" class="btn btn-primary">Send</button>
+        <button @onclick="Reset" class="btn btn-secondary">Reset</button>
     </div>
-}
-else if (isGenerating)
-{
-    <div class="mt-4">
-        <span class="spinner-border" role="status"></span>
-        <span>Generating your pet...</span>
-    </div>
-}
 
-
-@if (!string.IsNullOrWhiteSpace(errorMessage))
-{
-    <div class="alert alert-danger mt-4" role="alert">
-        @errorMessage
-    </div>
-}
-
-<hr />
-
-<h3>Chat with your Pet</h3>
-<input @bind="input" @onkeyup="Enter" class="w-50" placeholder="메시지" />
-<button @onclick="Send">Send</button>
-<button @onclick="Reset">Reset</button>
-
-<ul>
-@foreach (var m in ChatService.GetHistory())
-{
-    <li><b>@m.Role</b>: @m.Content</li>
-}
-</ul>
+    <ul style="list-style-type: none; padding: 0;">
+    @foreach (var m in ChatService.GetHistory())
+    {
+        <li><b>@m.Role</b>: @m.Content</li>
+    }
+    </ul>
+</div>
 
 @code {
     private string? input;
