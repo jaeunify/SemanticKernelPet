@@ -1,0 +1,89 @@
+@page "/pet"
+@rendermode InteractiveServer
+
+@inject SemanticKernelService.ITextToTextService ChatService
+@inject SemanticKernelService.ITextToImageService ImageService
+
+<h3>My Pet</h3>
+
+@if (!string.IsNullOrWhiteSpace(generatedImageUrl))
+{
+    <div class="mt-4">
+        <img src="@generatedImageUrl" alt="Generated Pet Image" class="img-fluid rounded" style="max-width: 512px; max-height: 512px;" />
+    </div>
+}
+else if (isGenerating)
+{
+    <div class="mt-4">
+        <span class="spinner-border" role="status"></span>
+        <span>Generating your pet...</span>
+    </div>
+}
+
+
+@if (!string.IsNullOrWhiteSpace(errorMessage))
+{
+    <div class="alert alert-danger mt-4" role="alert">
+        @errorMessage
+    </div>
+}
+
+<hr />
+
+<h3>Chat with your Pet</h3>
+<input @bind="input" @onkeyup="Enter" class="w-50" placeholder="메시지" />
+<button @onclick="Send">Send</button>
+<button @onclick="Reset">Reset</button>
+
+<ul>
+@foreach (var m in ChatService.GetHistory())
+{
+    <li><b>@m.Role</b>: @m.Content</li>
+}
+</ul>
+
+@code {
+    private string? input;
+    private string? generatedImageUrl;
+    private string? errorMessage;
+    private bool isGenerating = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var petDescription = "A cute, fluffy, white cat sitting on a comfortable cushion.";
+        ChatService.SetSystemPrompt("You are a cute pet. Respond to the user in a friendly and playful manner. Just be a cat. Act like a cat. Answer in Korean");
+
+        isGenerating = true;
+        try
+        {
+            generatedImageUrl = await ImageService.GenerateImageAsync(petDescription);
+        }
+        catch
+        {
+            errorMessage = "Failed to generate pet image. Please try again later.";
+        }
+        finally
+        {
+            isGenerating = false;
+        }
+    }
+
+    private async Task Send()
+    {
+        if (!string.IsNullOrWhiteSpace(input))
+        {
+            await ChatService.SendAsync(input);
+            input = string.Empty;
+        }
+    }
+
+    public async Task Enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            await Send();
+        }
+    }
+
+    private void Reset() => ChatService.Reset();
+}
