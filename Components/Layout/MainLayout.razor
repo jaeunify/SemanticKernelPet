@@ -1,29 +1,28 @@
-﻿@using SemanticKernelPet.Components.Pages
+@using SemanticKernelPet.Components.Pages
 @inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<RadzenDialog />
+<RadzenNotification />
+<RadzenTooltip />
+<RadzenContextMenu />
 
-    <main>
+<RadzenLayout>
+    <RadzenHeader>
         <div class="top-row px-4">
             <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
         </div>
-
+    </RadzenHeader>
+    <RadzenSidebar>
+        <NavMenu />
+    </RadzenSidebar>
+    <RadzenBody>
         <article class="content px-4">
             @Body
         </article>
-
-        <div class="px-4 py-2">
-            <hr />
+    </RadzenBody>
+    <RadzenFooter>
+        <div class="items-area px-4 py-2">
             <Items />
         </div>
-    </main>
-</div>
-
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
-</div>
+    </RadzenFooter>
+</RadzenLayout>
