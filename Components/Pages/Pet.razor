@@ -1,73 +1,76 @@
-@page "/pet"
+@page "/pet/{PetName}"
+@using Microsoft.AspNetCore.Components
 @rendermode InteractiveServer
 
-@inject PetService.PetChatService ChatService
-@inject PetService.PetImageService ImageService
+@inject PetChatService ChatService
+@inject PetStorageService PetStorageService
 
-<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; text-align: center;">
-    <h3>My Pet</h3>
-
-    @if (!string.IsNullOrWhiteSpace(generatedImageUrl))
+<div
+    style="display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; text-align: center;">
+    @if (errorCode == ErrorCode.PetNotFound) { 
+        <Error/>
+    }
+    else
     {
-        <div class="mt-4">
-            <img src="@generatedImageUrl" alt="Generated Pet Image" class="img-fluid rounded" style="max-width: 512px; max-height: 512px;" />
+
+        <h3>My Pet: @PetName</h3>
+
+        @if (!string.IsNullOrWhiteSpace(generatedImageUrl))
+        {
+            <div class="mt-4">
+                <img src="@generatedImageUrl" alt="Generated Pet Image" class="img-fluid rounded"
+                    style="max-width: 512px; max-height: 512px;" />
+            </div>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(errorMessage))
+        {
+            <div class="alert alert-danger mt-4" role="alert">
+                @errorMessage
+            </div>
+        }
+
+        <hr class="w-50" />
+
+        <h3>Chat with your Pet</h3>
+        <div class="d-flex justify-content-center w-100 mb-2">
+            <input @bind="input" @onkeyup="Enter" class="w-50" placeholder="메시지" />
+            <button @onclick="Send" class="btn btn-primary">Send</button>
         </div>
+
+        <ul style="list-style-type: none; padding: 0;">
+            @foreach (var m in ChatService.GetHistory())
+            {
+                <li><b>@m.Role</b>: @m.Content</li>
+            }
+        </ul>
     }
-    else if (isGenerating)
-    {
-        <div class="mt-4">
-            <span class="spinner-border" role="status"></span>
-            <span>Generating your pet...</span>
-        </div>
-    }
-
-
-    @if (!string.IsNullOrWhiteSpace(errorMessage))
-    {
-        <div class="alert alert-danger mt-4" role="alert">
-            @errorMessage
-        </div>
-    }
-
-    <hr class="w-50" />
-
-    <h3>Chat with your Pet</h3>
-    <div class="d-flex justify-content-center w-100 mb-2">
-        <input @bind="input" @onkeyup="Enter" class="w-50" placeholder="메시지" />
-        <button @onclick="Send" class="btn btn-primary">Send</button>
-    </div>
-
-    <ul style="list-style-type: none; padding: 0;">
-    @foreach (var m in ChatService.GetHistory())
-    {
-        <li><b>@m.Role</b>: @m.Content</li>
-    }
-    </ul>
 </div>
 
 @code {
+    [Parameter]
+    public string? PetName { get; set; }
+
     private string? input = "My pet is upset because I forgot to feed it. Pick only one function.";
     private string? generatedImageUrl;
     private string? errorMessage;
-    private bool isGenerating = false;
+    private ErrorCode errorCode = ErrorCode.OK;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        var petDescription = "A cute, fluffy, white cat sitting on a comfortable cushion.";
+        if (string.IsNullOrWhiteSpace(PetName))
+        {
+            errorCode = ErrorCode.PetNotFound;
+            return;
+        }
+        var Pet = PetStorageService.GetPet(PetName); // 여기서 계속 null
+        if (Pet == null)
+        {
+            errorCode = ErrorCode.PetNotFound;
+            return;
+        }
 
-        isGenerating = true;
-        try
-        {
-            generatedImageUrl = await ImageService.GenerateImageAsync(petDescription);
-        }
-        catch
-        {
-            errorMessage = "Failed to generate pet image. Please try again later.";
-        }
-        finally
-        {
-            isGenerating = false;
-        }
+        generatedImageUrl = Pet.PetImageUrl;
     }
 
     private async Task Send()

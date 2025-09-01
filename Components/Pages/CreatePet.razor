@@ -1,38 +1,52 @@
 @page "/create-pet"
-@using PetService
 @rendermode InteractiveServer
 @inject PetImageService ImageService
+@inject PetStorageService PetStorageService
+@inject NavigationManager Navigation
 
-<h3>나만의 펫 만들기 (Create Your Own Pet)</h3>
+<div class="d-flex flex-column justify-content-center align-items-center text-center" style="min-height: 80vh;">
+    <div style="width: 100%; max-width: 600px;">
+        <h3>나만의 펫 만나기 (Meet Your Own Pet)</h3>
 
-<p>원하는 펫을 자세히 묘사해주세요. 생성된 펫은 홈 화면에 나타납니다.</p>
-<textarea @bind="petDescription" placeholder="예: 꽃밭에서 놀고 있는 솜털같은 골든 리트리버 강아지" rows="4" style="width: 100%;"></textarea>
-<button class="btn btn-primary" @onclick="GeneratePetImage" disabled="@isGenerating">
-    @if (isGenerating)
-    {
-        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-        <span>만드는 중...</span>
-    }
-    else
-    {
-        <span>만나기 (Meet)</span>
-    }
-</button>
+        @if (string.IsNullOrWhiteSpace(generatedImageUrl))
+        {
+            <p>원하는 펫을 자세히 묘사해주세요. 생성된 펫은 홈 화면에 나타납니다.</p>
+            <textarea @bind="petDescription" placeholder="예: 꽃밭에서 놀고 있는 솜털같은 골든 리트리버 강아지" rows="4" class="w-100"></textarea>
+            <button class="btn btn-primary mt-2 w-100" @onclick="GeneratePetImage" disabled="@isGenerating">
+                @if (isGenerating)
+                {
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span>만드는 중...</span>
+                }
+                else
+                {
+                    <span>만나기 (Meet)</span>
+                }
+            </button>
+        }
+        else
+        {
+            <div class="mt-4">
+                <h4>새로운 펫! (Your New Pet!)</h4>
+                <img src="@generatedImageUrl" alt="Generated Pet Image" class="img-fluid rounded"
+                    style="max-width: 512px; max-height: 512px;" />
+            </div>
 
-@if (!string.IsNullOrWhiteSpace(generatedImageUrl))
-{
-    <div class="mt-4">
-        <h4>새로운 펫! (Your New Pet!)</h4>
-        <img src="@generatedImageUrl" alt="Generated Pet Image" class="img-fluid rounded" style="max-width: 512px; max-height: 512px;" />
+            <input @bind="petName" class="w-50" placeholder="이름" />
+            <button class="btn btn-primary mt-2 w-100" @onclick="Adopt" disabled="@isGenerating">입양하기 (Adopt)</button>
+
+            <button class="btn btn-primary mt-2 w-100" @onclick="Reset" disabled="@isGenerating">다시 만들기
+                (Regenerate)</button>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(errorMessage))
+        {
+            <div class="alert alert-danger mt-4" role="alert">
+                @errorMessage
+            </div>
+        }
     </div>
-}
-
-@if (!string.IsNullOrWhiteSpace(errorMessage))
-{
-    <div class="alert alert-danger mt-4" role="alert">
-        @errorMessage
-    </div>
-}
+</div>
 
 
 @code {
@@ -40,6 +54,7 @@
     private string? generatedImageUrl;
     private bool isGenerating = false;
     private string? errorMessage;
+    private string? petName;
 
     private async Task GeneratePetImage()
     {
@@ -66,5 +81,29 @@
         {
             isGenerating = false;
         }
+    }
+
+    private void Reset()
+    {
+        generatedImageUrl = null;
+        errorMessage = null;
+    }
+
+    private void Adopt()
+    {
+        if (string.IsNullOrWhiteSpace(petName))
+        {
+            errorMessage = "펫의 이름을 지어주세요.";
+            return;
+        }
+
+        var errorCode = PetStorageService.AddPet(petName, petDescription!, generatedImageUrl!);
+        if (errorCode == ErrorCode.DuplicatePetName)
+        {
+            errorMessage = "이미 사용중인 이름입니다. 다른 이름을 지어주세요.";
+            return;
+        }
+
+        Navigation.NavigateTo($"/pet/{petName}");
     }
 }

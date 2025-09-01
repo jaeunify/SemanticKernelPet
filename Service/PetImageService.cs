@@ -1,8 +1,6 @@
 using System.Text;
 using System.Text.Json;
 
-namespace PetService;
-
 public class PetImageService
 {
     private readonly IConfiguration _configuration;

@@ -11,8 +11,9 @@ builder.Services.AddRazorComponents()
 builder.Services.AddHttpClient();
 
 // Register my wrapper services
-builder.Services.AddTransient<PetChatService>();
+builder.Services.AddScoped<PetChatService>();
 builder.Services.AddTransient<PetImageService>();
+builder.Services.AddScoped<PetStorageService>();
 
 var app = builder.Build();
 
