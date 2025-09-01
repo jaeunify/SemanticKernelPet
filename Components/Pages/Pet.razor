@@ -1,6 +1,6 @@
 @page "/pet/{PetName}"
 @using Microsoft.AspNetCore.Components
-@rendermode InteractiveServer // @(new InteractiveServerRenderMode(prerender: false))
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 @inject PetChatService ChatService
 @inject PetStorageService PetStorageService
@@ -13,7 +13,6 @@
     }
     else
     {
-        <h3>@PetName</h3>
 
         @if (!string.IsNullOrWhiteSpace(generatedImageUrl))
         {
@@ -25,7 +24,7 @@
 
         <hr class="w-50" />
 
-        <h3>Chat with your Pet</h3>
+        <h3>Chat with your Pet, @PetName</h3>
         <div class="d-flex justify-content-center w-100 mb-2">
             <input @bind="input" @onkeyup="Enter" class="w-50" placeholder="메시지" />
             <button @onclick="Send" class="btn btn-primary">Send</button>

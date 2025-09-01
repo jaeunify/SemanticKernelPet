@@ -1,5 +1,4 @@
 using SemanticKernelPet.Components;
-using PetService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +31,6 @@ app.UseAntiforgery();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode(prerender: false);
+    .AddInteractiveServerRenderMode();
 
 app.Run();
