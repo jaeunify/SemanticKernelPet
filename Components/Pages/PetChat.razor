@@ -1,0 +1,35 @@
+@using Microsoft.SemanticKernel.ChatCompletion
+
+<ul style="list-style-type: none; padding: 0;">
+@foreach (var m in PetHistory)
+{
+    var talker = m.Role;
+    var content = m.Content;
+
+    if(string.IsNullOrWhiteSpace(content))
+    {
+        continue;
+    }
+
+    @if(talker == AuthorRole.System){
+        // <li><b>System:</b> <span>@content</span></li>
+    }
+    else if(talker == AuthorRole.User){
+        <li><b>User:</b> <span>@content</span></li>
+    }
+    else if(talker == AuthorRole.Assistant){
+        <li><b>@PetName:</b> <span>@content</span></li>
+    }
+    else{
+        <li><b>@talker:</b> <span>@content</span></li>
+    }
+}
+</ul>
+
+@code {
+    [Parameter]
+    public required string PetName { get; set; }
+
+    [Parameter]
+    public required ChatHistory PetHistory { get; set; }
+}

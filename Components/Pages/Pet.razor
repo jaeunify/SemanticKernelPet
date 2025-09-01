@@ -30,12 +30,7 @@
             <button @onclick="Send" class="btn btn-primary">Send</button>
         </div>
 
-        <ul style="list-style-type: none; padding: 0;">
-            @foreach (var m in pet.History)
-            {
-                <li><b>@m.Role</b>: @m.Content</li>
-            }
-        </ul>
+        <PetChat PetName=@PetName PetHistory="pet.History" />
     }
 </div>
 
