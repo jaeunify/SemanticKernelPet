@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using Microsoft.SemanticKernel;
 
-namespace SemanticKernelService.Plugins
+namespace PetService.Plugins
 {
     public class PetPlugin
     {

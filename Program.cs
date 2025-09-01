@@ -1,9 +1,5 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.ChatCompletion;
 using SemanticKernelPet.Components;
-using SemanticKernelService;
+using PetService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,8 +11,8 @@ builder.Services.AddRazorComponents()
 builder.Services.AddHttpClient();
 
 // Register my wrapper services
-builder.Services.AddTransient<TextToTextService>();
-builder.Services.AddTransient<TextToImageService>();
+builder.Services.AddTransient<PetChatService>();
+builder.Services.AddTransient<PetImageService>();
 
 var app = builder.Build();
 

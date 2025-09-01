@@ -1,8 +1,8 @@
-@using SemanticKernelService
+@using PetService
 @rendermode InteractiveServer
 
 @page "/chat"
-@inject TextToTextService SK
+@inject PetChatService SK
 
 <h3>Gemini Chat</h3>
 <input @bind="input" placeholder="메시지" />

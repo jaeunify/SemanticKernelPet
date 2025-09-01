@@ -1,15 +1,10 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
-using SemanticKernelService.Plugins;
+using PetService.Plugins;
 
-namespace SemanticKernelService
+namespace PetService
 {
-    public class TextToTextService
+    public class PetChatService
     {
         private readonly Kernel _kernel;
         private readonly IChatCompletionService _chat;
@@ -24,15 +19,13 @@ namespace SemanticKernelService
             }
         };
 
-        private string? _systemPrompt;
-
-        public TextToTextService(IConfiguration configuration)
+        public PetChatService(IConfiguration configuration)
         {
             var apiKey = configuration["OpenAi:ApiKey"];
             var builder = Kernel.CreateBuilder();
             builder.AddOpenAIChatCompletion(
                 modelId: "gpt-4o-mini",  // 저렴한 모델
-                apiKey: apiKey
+                apiKey: apiKey ?? throw new Exception("OpenAi:ApiKey is not configured in appsettings.json")
             );
 
             _kernel = builder.Build();
@@ -40,14 +33,10 @@ namespace SemanticKernelService
 
             _settings = new PromptExecutionSettings
             {
-                // FunctionChoiceBehavior = FunctionChoiceBehavior.Required(
-                //     functions: new[] { angryFn, giveFn, defaultFn }
-                // )
-
                 FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
             };
 
-            // 5) “툴을 반드시 써라”는 강한 유도(System/User 프롬프트)
+            // “툴을 반드시 써라”는 강한 유도(System/User 프롬프트)
             _chat = _kernel.GetRequiredService<IChatCompletionService>();
 
             _history = new ChatHistory();
