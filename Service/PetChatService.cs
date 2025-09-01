@@ -1,7 +1,6 @@
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using PetService.Entity;
-using PetService.Plugins;
 
 public class PetChatService
 {
@@ -18,7 +17,7 @@ public class PetChatService
         }
     };
 
-    public PetChatService(IConfiguration configuration, PetStorageService petStorageService)
+    public PetChatService(IConfiguration configuration, PetStorageService petStorageService, ItemStorageService itemStorageService)
     {
         _petStorageService = petStorageService;
         var apiKey = configuration["OpenAi:ApiKey"];
@@ -29,7 +28,7 @@ public class PetChatService
         );
 
         _kernel = builder.Build();
-        _kernel.Plugins.AddFromType<PetPlugin>("Pet");
+        _kernel.Plugins.AddFromObject(new PetPlugin(itemStorageService), "Pet");
 
         _settings = new PromptExecutionSettings
         {

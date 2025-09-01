@@ -14,6 +14,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddScoped<PetChatService>();
 builder.Services.AddTransient<PetImageService>();
 builder.Services.AddScoped<PetStorageService>();
+builder.Services.AddScoped<ItemStorageService>();
 builder.Services.AddRadzenComponents();
 
 var app = builder.Build();

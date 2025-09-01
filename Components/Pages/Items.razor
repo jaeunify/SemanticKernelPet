@@ -1,0 +1,41 @@
+@implements IDisposable
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@inject ItemStorageService ItemStorageService
+
+<h3>Items</h3>
+
+<ul>
+    @foreach (var item in items)
+    {
+        <li>
+            @* <img src="@item.ImageUrl" alt="@item.Name" /> *@
+            <h4>@item.Name</h4>
+            <p>@item.Description</p>
+        </li>
+    }
+</ul>
+
+@code {
+    private List<Item> items = new List<Item>();
+
+    protected override void OnInitialized()
+    {
+        items = ItemStorageService.GetItems();
+        ItemStorageService.OnChange += OnItemStorageChanged;
+    }
+
+    private void OnItemStorageChanged()
+    {
+        // Use InvokeAsync to marshal the update to the UI thread
+        InvokeAsync(() =>
+        {
+            items = ItemStorageService.GetItems();
+            StateHasChanged();
+        });
+    }
+
+    public void Dispose()
+    {
+        ItemStorageService.OnChange -= OnItemStorageChanged;
+    }
+}
