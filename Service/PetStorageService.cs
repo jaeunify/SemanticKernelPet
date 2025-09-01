@@ -4,7 +4,18 @@ public class PetStorageService
 {
     private readonly Dictionary<string, Pet> _petData = new(); // petName - Pet
 
-    public event Action? OnChange;
+    public Pet? GetPet(string petName)
+    {
+        return _petData.TryGetValue(petName, out var data) ? data : null;
+    }
+
+    public bool IsAnyPet()
+    {
+        return _petData.Count > 0;
+    }
+
+    public event Action<Pet>? OnPetAdded;
+    public event Action<string>? OnPetRemoved;
 
     public ErrorCode AddPet(string petName, string description, string petImageUrl)
     {
@@ -16,22 +27,22 @@ public class PetStorageService
         var pet = new Pet(petName, description, petImageUrl);
         _petData[petName] = pet;
 
-        OnChange?.Invoke();
+        OnPetAdded?.Invoke(pet);
         return ErrorCode.OK;
-    }
-
-    public Pet? GetPet(string petName)
-    {
-        return _petData.TryGetValue(petName, out var data) ? data : null;
-    }
-
-    public bool IsAnyPet()
-    {
-        return _petData.Count > 0;
     }
 
     public List<string> GetAllPetNames()
     {
-        return _petData.Keys.ToList(); // 여기서 아무것도 없는 걸로 나온다 ..
+        return _petData.Keys.ToList();
+    }
+
+    public ErrorCode DeletePet(string petName)
+    {
+        if (_petData.Remove(petName))
+        {
+            OnPetRemoved?.Invoke(petName);
+            return ErrorCode.OK;
+        }
+        return ErrorCode.PetNotFound;
     }
 }

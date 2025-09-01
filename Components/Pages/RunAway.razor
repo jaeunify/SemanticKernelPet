@@ -1,0 +1,27 @@
+@inject NavigationManager Navigation
+
+<div class="d-flex flex-column justify-content-center align-items-center text-center" style="min-height: 80vh;">
+    <div class="card p-4 shadow-sm" style="max-width: 500px;">
+        <h1 class="display-1">😢</h1>
+        <h2 class="my-3">펫이 떠나 버렸어요...</h2>
+        <figure class="text-center">
+            <blockquote class="blockquote">
+                <p class="mb-0">"@reason"</p>
+            </blockquote>
+            <figcaption class="blockquote-footer mt-1">
+                펫이 남긴 마지막 말
+            </figcaption>
+        </figure>
+        <button class="btn btn-primary mt-3" @onclick="GoToCreate">새로운 펫 만나러 가기</button>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public required string reason { get; set; }
+
+    private void GoToCreate()
+    {
+        Navigation.NavigateTo("/create-pet");
+    }
+}

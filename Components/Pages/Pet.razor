@@ -1,38 +1,46 @@
 @page "/pet/{PetName}"
 @using Microsoft.AspNetCore.Components
+@using Microsoft.SemanticKernel.ChatCompletion
+@implements IDisposable
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 @inject PetChatService ChatService
 @inject PetStorageService PetStorageService
 
-<div
-    style="display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; text-align: center;">
-    @if (errorCode == ErrorCode.PetNotFound || pet is null) {
-        // Navigation.NavigateTo($"/Error");
-        <Error/>
-    }
-    else
-    {
-
-        @if (!string.IsNullOrWhiteSpace(generatedImageUrl))
+@if (petHasRunAway)
+{
+    <RunAway reason="@runAwayReason" />
+}
+else
+{
+    <div
+        style="display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; text-align: center;">
+        @if (errorCode == ErrorCode.PetNotFound || pet is null)
         {
-            <div class="mt-4">
-                <img src="@generatedImageUrl" alt="Generated Pet Image" class="img-fluid rounded"
-                    style="max-width: 512px; max-height: 512px;" />
-            </div>
+            <Error />
         }
+        else
+        {
+            @if (!string.IsNullOrWhiteSpace(generatedImageUrl))
+            {
+                <div class="mt-4">
+                    <img src="@generatedImageUrl" alt="Generated Pet Image" class="img-fluid rounded"
+                        style="max-width: 512px; max-height: 512px;" />
+                </div>
+            }
 
-        <hr class="w-50" />
+            <hr class="w-50" />
 
-        <h3>Chat with your Pet, @PetName</h3>
-        <div class="d-flex justify-content-center w-100 mb-2">
-            <input @bind="input" @onkeyup="Enter" class="w-50" placeholder="메시지" />
-            <button @onclick="Send" class="btn btn-primary">Send</button>
-        </div>
+            <h3>Chat with your Pet, @PetName</h3>
+            <div class="d-flex justify-content-center w-100 mb-2">
+                <input @bind="input" @onkeyup="Enter" class="w-50" placeholder="메시지" />
+                <button @onclick="Send" class="btn btn-primary">Send</button>
+            </div>
 
-        <PetChat PetName=@PetName PetHistory="pet.History" />
-    }
-</div>
+            <PetChat PetName="@PetName" PetHistory="pet.History" />
+        }
+    </div>
+}
 
 @code {
     [Parameter]
@@ -42,6 +50,8 @@
     private string? input = "처음뵙겠습니다.. 펫님";
     private string? generatedImageUrl;
     private ErrorCode errorCode = ErrorCode.OK;
+    private bool petHasRunAway = false;
+    private string runAwayReason = "an unknown reason";
 
     protected override void OnInitialized()
     {
@@ -59,13 +69,33 @@
         }
 
         generatedImageUrl = pet.PetImageUrl;
+        PetStorageService.OnPetRemoved += OnPetRemoved;
+    }
+
+    private void OnPetRemoved(string removedPetName)
+    {
+        if (string.Equals(removedPetName, PetName, StringComparison.OrdinalIgnoreCase))
+        {
+            var runAwayMessage = pet?.History.LastOrDefault(m =>
+                m.Role == AuthorRole.Tool &&
+                m.Content?.Contains("running away from home", StringComparison.OrdinalIgnoreCase) == true);
+
+            if (runAwayMessage != null)
+            {
+                var reasonText = runAwayMessage.Content?.Split("Reason:").LastOrDefault()?.Trim().TrimEnd(']');
+                runAwayReason = reasonText ?? "an unknown reason";
+            }
+
+            petHasRunAway = true;
+            InvokeAsync(StateHasChanged);
+        }
     }
 
     private async Task Send()
     {
-        if (!string.IsNullOrWhiteSpace(input))
+        if (!string.IsNullOrWhiteSpace(input) && pet is not null)
         {
-            await ChatService.SendAsync(pet!, input);
+            await ChatService.SendAsync(pet, input);
             input = string.Empty;
         }
     }
@@ -76,5 +106,10 @@
         {
             await Send();
         }
+    }
+
+    public void Dispose()
+    {
+        PetStorageService.OnPetRemoved -= OnPetRemoved;
     }
 }

@@ -35,7 +35,8 @@
     protected override void OnInitialized()
     {
         petNames = PetStorageService.GetAllPetNames();
-        PetStorageService.OnChange += UpdatePetList;
+        PetStorageService.OnPetAdded += (pet) => UpdatePetList();
+        PetStorageService.OnPetRemoved += (petName) => UpdatePetList();
     }
 
     private void UpdatePetList()
@@ -46,7 +47,8 @@
 
     public void Dispose()
     {
-        PetStorageService.OnChange -= UpdatePetList;
+        PetStorageService.OnPetAdded -= (pet) => UpdatePetList();
+        PetStorageService.OnPetRemoved -= (petName) => UpdatePetList();
     }
 }
 

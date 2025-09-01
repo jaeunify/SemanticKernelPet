@@ -3,11 +3,11 @@ using Microsoft.SemanticKernel.ChatCompletion;
 using PetService.Entity;
 using PetService.Plugins;
 
-
 public class PetChatService
 {
     private readonly Kernel _kernel;
     private readonly IChatCompletionService _chat;
+    private readonly PetStorageService _petStorageService;
 
     private PromptExecutionSettings _settings = new()
     {
@@ -18,8 +18,9 @@ public class PetChatService
         }
     };
 
-    public PetChatService(IConfiguration configuration)
+    public PetChatService(IConfiguration configuration, PetStorageService petStorageService)
     {
+        _petStorageService = petStorageService;
         var apiKey = configuration["OpenAi:ApiKey"];
         var builder = Kernel.CreateBuilder();
         builder.AddOpenAIChatCompletion(
@@ -56,6 +57,20 @@ public class PetChatService
 
             if (reply is not null)
             {
+                // Check the history for the result of the tool call
+                var ranAway = pet.History.Any(m =>
+                    m.Role == AuthorRole.Tool &&
+                    m.Content?.Contains("running away from home", StringComparison.OrdinalIgnoreCase) == true);
+
+                if (ranAway)
+                {
+                    var errorCode = _petStorageService.DeletePet(pet.Name);
+                    if (errorCode != ErrorCode.OK)
+                    {
+                        throw new Exception($"Failed to delete pet {pet.Name}. ErrorCode: {errorCode}");
+                    }
+                }
+
                 pet.History.Add(reply);
             }
 
