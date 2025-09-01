@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
+using SemanticKernelService.Plugins;
 
 namespace SemanticKernelService
 {
@@ -25,42 +26,32 @@ namespace SemanticKernelService
 
         private string? _systemPrompt;
 
-        public TextToTextService(Kernel kernel)
+        public TextToTextService(IConfiguration configuration)
         {
-            _kernel = kernel ?? throw new ArgumentNullException(nameof(kernel));
+            var apiKey = configuration["OpenAi:ApiKey"];
+            var builder = Kernel.CreateBuilder();
+            builder.AddOpenAIChatCompletion(
+                modelId: "gpt-4o-mini",  // 저렴한 모델
+                apiKey: apiKey
+            );
+
+            _kernel = builder.Build();
+            _kernel.Plugins.AddFromType<PetPlugin>("Pet");
+
+            _settings = new PromptExecutionSettings
+            {
+                // FunctionChoiceBehavior = FunctionChoiceBehavior.Required(
+                //     functions: new[] { angryFn, giveFn, defaultFn }
+                // )
+
+                FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
+            };
+
+            // 5) “툴을 반드시 써라”는 강한 유도(System/User 프롬프트)
             _chat = _kernel.GetRequiredService<IChatCompletionService>();
-        }
 
-        public void SetSystemPrompt(string? systemPrompt)
-        {
-            _systemPrompt = string.IsNullOrWhiteSpace(systemPrompt) ? null : systemPrompt!.Trim();
-            RemoveExistingSystemMessages();
-            EnsureSystemPrompt();
-        }
-
-        public void UpdateSettings(double? temperature = null, int? maxTokens = null)
-        {
-            if (_settings.ExtensionData == null)
-            {
-                _settings.ExtensionData = new Dictionary<string, object>();
-            }
-
-            if (temperature.HasValue)
-            {
-                _settings.ExtensionData["temperature"] = temperature.Value;
-            }
-
-            if (maxTokens.HasValue)
-            {
-                _settings.ExtensionData["maxOutputTokens"] = maxTokens.Value;
-            }
-        }
-        
-        public void AddPlugin<T>(string pluginName) where T : class, new()
-        {
-            if (string.IsNullOrWhiteSpace(pluginName))
-                throw new ArgumentException("pluginName must not be empty.", nameof(pluginName));
-            _kernel.Plugins.AddFromType<T>(pluginName);
+            _history = new ChatHistory();
+            _history.AddSystemMessage("You are a pet simulator tool router. Always call exactly ONE tool. with pet's talk message. answer in Korean.");
         }
 
         public async Task<ChatMessageContent> SendAsync(string userInput, CancellationToken ct = default)
@@ -68,7 +59,6 @@ namespace SemanticKernelService
             if (string.IsNullOrWhiteSpace(userInput))
                 throw new ArgumentException("userInput must not be empty.", nameof(userInput));
 
-            EnsureSystemPrompt();
             _history.AddUserMessage(userInput);
 
             try
@@ -93,40 +83,5 @@ namespace SemanticKernelService
         }
 
         public IReadOnlyList<ChatMessageContent> GetHistory() => _history;
-
-        public void Reset()
-        {
-            _history.Clear();
-            EnsureSystemPrompt();
-        }
-
-        private void EnsureSystemPrompt()
-        {
-            if (string.IsNullOrEmpty(_systemPrompt)) return;
-
-            bool hasSystem = false;
-            foreach (var m in _history)
-            {
-                if (m.Role == AuthorRole.System)
-                {
-                    hasSystem = true;
-                    break;
-                }
-            }
-
-            if (!hasSystem)
-            {
-                _history.AddSystemMessage(_systemPrompt);
-            }
-        }
-
-        private void RemoveExistingSystemMessages()
-        {
-            for (int i = _history.Count - 1; i >= 0; i--)
-            {
-                if (_history[i].Role == AuthorRole.System)
-                    _history.RemoveAt(i);
-            }
-        }
     }
 }

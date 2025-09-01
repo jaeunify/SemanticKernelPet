@@ -35,7 +35,6 @@
     <div class="d-flex justify-content-center w-100 mb-2">
         <input @bind="input" @onkeyup="Enter" class="w-50" placeholder="메시지" />
         <button @onclick="Send" class="btn btn-primary">Send</button>
-        <button @onclick="Reset" class="btn btn-secondary">Reset</button>
     </div>
 
     <ul style="list-style-type: none; padding: 0;">
@@ -47,7 +46,7 @@
 </div>
 
 @code {
-    private string? input;
+    private string? input = "My pet is upset because I forgot to feed it. Pick only one function.";
     private string? generatedImageUrl;
     private string? errorMessage;
     private bool isGenerating = false;
@@ -55,7 +54,6 @@
     protected override async Task OnInitializedAsync()
     {
         var petDescription = "A cute, fluffy, white cat sitting on a comfortable cushion.";
-        ChatService.SetSystemPrompt("You are a cute pet. Respond to the user in a friendly and playful manner. Just be a cat. Act like a cat. Answer in Korean");
 
         isGenerating = true;
         try
@@ -88,6 +86,4 @@
             await Send();
         }
     }
-
-    private void Reset() => ChatService.Reset();
 }

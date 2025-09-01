@@ -7,7 +7,6 @@
 <h3>Gemini Chat</h3>
 <input @bind="input" placeholder="메시지" />
 <button @onclick="Send">Send</button>
-<button @onclick="Reset">Reset</button>
 
 <ul>
 @foreach (var m in SK.GetHistory())
@@ -18,11 +17,6 @@
 
 @code {
     private string? input;
-    protected override void OnInitialized()
-    {
-        // 원하면 여기서 플러그인 추가
-        // SK.AddPlugin<LightsPlugin>("Lights");
-    }
 
     private async Task Send()
     {
@@ -32,6 +26,4 @@
             input = string.Empty;
         }
     }
-
-    private void Reset() => SK.Reset();
 }

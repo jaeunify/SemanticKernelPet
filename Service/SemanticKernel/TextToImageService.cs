@@ -10,13 +10,11 @@ namespace SemanticKernelService;
 
 public class TextToImageService
 {
-    private readonly IHttpClientFactory _httpClientFactory;
     private readonly IConfiguration _configuration;
     private readonly string? _apiKey;
 
-    public TextToImageService(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+    public TextToImageService(IConfiguration configuration)
     {
-        _httpClientFactory = httpClientFactory;
         _configuration = configuration;
         _apiKey = _configuration["Gemini:ApiKey"];
 

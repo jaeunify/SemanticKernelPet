@@ -14,15 +14,6 @@ builder.Services.AddRazorComponents()
 // Add HttpClientFactory for direct API calls
 builder.Services.AddHttpClient();
 
-// semantic kernel
-var geminiApiKey = builder.Configuration["Gemini:ApiKey"] ?? throw new Exception("Gemini:ApiKey is not set in configuration");
-
-var kernelBuilder = builder.Services.AddKernel()
-    .AddGoogleAIGeminiChatCompletion(
-        modelId: "gemini-1.5-pro-002",   // 또는 "gemini-1.5-flash-002"
-        apiKey: geminiApiKey
-    );
-
 // Register my wrapper services
 builder.Services.AddTransient<TextToTextService>();
 builder.Services.AddTransient<TextToImageService>();
