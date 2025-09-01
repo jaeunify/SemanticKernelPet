@@ -1,4 +1,5 @@
-using SemanticKernelPet.Components;
+
+using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddScoped<PetChatService>();
 builder.Services.AddTransient<PetImageService>();
 builder.Services.AddScoped<PetStorageService>();
+builder.Services.AddRadzenComponents();
 
 var app = builder.Build();
 
@@ -30,7 +32,7 @@ app.UseHttpsRedirection();
 app.UseAntiforgery();
 
 app.MapStaticAssets();
-app.MapRazorComponents<App>()
+app.MapRazorComponents<SemanticKernelPet.Components.App>()
     .AddInteractiveServerRenderMode();
 
 app.Run();
