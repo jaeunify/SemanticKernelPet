@@ -1,6 +1,6 @@
 @using Microsoft.SemanticKernel.ChatCompletion
 
-<ul style="list-style-type: none; padding: 0;">
+<ul style="list-style-type: none; padding: 0; max-height: 400px; overflow-y: auto;">
 @foreach (var m in PetHistory)
 {
     var talker = m.Role;
