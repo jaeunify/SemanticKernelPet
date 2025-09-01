@@ -1,5 +1,6 @@
 using Microsoft.SemanticKernel.ChatCompletion;
 
+namespace PetService.Entity;
 public class Pet
 {
     public string Name { get; private set; }
@@ -12,5 +13,6 @@ public class Pet
         Name = name;
         Description = description;
         PetImageUrl = petImageUrl;
+        History.AddSystemMessage($"You are a pet simulator. Act like a pet. Your name is {name}. This is your manual: {description}. Answer in Korean.");
     }
 }

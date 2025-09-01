@@ -7,7 +7,7 @@
 
 <div
     style="display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; text-align: center;">
-    @if (errorCode == ErrorCode.PetNotFound) {
+    @if (errorCode == ErrorCode.PetNotFound || pet is null) {
         // Navigation.NavigateTo($"/Error");
         <Error/>
     }
@@ -31,7 +31,7 @@
         </div>
 
         <ul style="list-style-type: none; padding: 0;">
-            @foreach (var m in ChatService.GetHistory())
+            @foreach (var m in pet.History)
             {
                 <li><b>@m.Role</b>: @m.Content</li>
             }
@@ -43,6 +43,7 @@
     [Parameter]
     public string? PetName { get; set; }
 
+    public PetService.Entity.Pet? pet = null;
     private string? input = "처음뵙겠습니다.. 펫님";
     private string? generatedImageUrl;
     private ErrorCode errorCode = ErrorCode.OK;
@@ -55,21 +56,21 @@
             return;
         }
 
-        var Pet = PetStorageService.GetPet(PetName);
-        if (Pet == null)
+        pet = PetStorageService.GetPet(PetName);
+        if (pet == null)
         {
             errorCode = ErrorCode.PetNotFound;
             return;
         }
 
-        generatedImageUrl = Pet.PetImageUrl;
+        generatedImageUrl = pet.PetImageUrl;
     }
 
     private async Task Send()
     {
         if (!string.IsNullOrWhiteSpace(input))
         {
-            await ChatService.SendAsync(input);
+            await ChatService.SendAsync(pet!, input);
             input = string.Empty;
         }
     }

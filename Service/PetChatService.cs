@@ -1,5 +1,6 @@
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
+using PetService.Entity;
 using PetService.Plugins;
 
 
@@ -7,7 +8,6 @@ public class PetChatService
 {
     private readonly Kernel _kernel;
     private readonly IChatCompletionService _chat;
-    private readonly ChatHistory _history = new();
 
     private PromptExecutionSettings _settings = new()
     {
@@ -37,29 +37,26 @@ public class PetChatService
 
         // “툴을 반드시 써라”는 강한 유도(System/User 프롬프트)
         _chat = _kernel.GetRequiredService<IChatCompletionService>();
-
-        _history = new ChatHistory();
-        _history.AddSystemMessage("You are a pet simulator. Act like a pet. answer in Korean.");
     }
 
-    public async Task<ChatMessageContent> SendAsync(string userInput, CancellationToken ct = default)
+    public async Task<ChatMessageContent> SendAsync(Pet pet, string userInput, CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(userInput))
             throw new ArgumentException("userInput must not be empty.", nameof(userInput));
 
-        _history.AddUserMessage(userInput);
+        pet.History.AddUserMessage(userInput);
 
         try
         {
             var reply = await _chat.GetChatMessageContentAsync(
-            _history,
+            pet.History,
             executionSettings: _settings,
             kernel: _kernel,
             cancellationToken: ct);
 
             if (reply is not null)
             {
-                _history.Add(reply);
+                pet.History.Add(reply);
             }
 
             return reply!;
@@ -69,7 +66,5 @@ public class PetChatService
             throw;
         }
     }
-
-    public IReadOnlyList<ChatMessageContent> GetHistory() => _history;
 }
 
