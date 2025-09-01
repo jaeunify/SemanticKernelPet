@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace SemanticKernelService;
 
-public class TextToImageService : ITextToImageService
+public class TextToImageService
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IConfiguration _configuration;

@@ -8,7 +8,7 @@ using Microsoft.SemanticKernel.ChatCompletion;
 
 namespace SemanticKernelService
 {
-    public class TextToTextService : ITextToTextService
+    public class TextToTextService
     {
         private readonly Kernel _kernel;
         private readonly IChatCompletionService _chat;
