@@ -24,8 +24,8 @@ var kernelBuilder = builder.Services.AddKernel()
     );
 
 // Register my wrapper services
-builder.Services.AddTransient<ITextToTextService, TextToTextService>();
-builder.Services.AddTransient<ITextToImageService, TextToImageService>();
+builder.Services.AddTransient<TextToTextService>();
+builder.Services.AddTransient<TextToImageService>();
 
 var app = builder.Build();
 
