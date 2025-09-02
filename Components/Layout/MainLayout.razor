@@ -8,8 +8,29 @@
 
 <RadzenLayout class="bg-layout">
     <RadzenBody>
-        <article class="content">
-            @Body
-        </article>
+        <div class="layer-container">
+            <!-- 1. 펫 레이어 -->
+            <div class="layer1-pet @(string.IsNullOrWhiteSpace(currentPetImage) ? "" : "has-pet")"
+                style="@(string.IsNullOrWhiteSpace(currentPetImage) ? "" : $"background-image:url('{currentPetImage}')")">
+            </div>
+
+            <!-- 2. 배경 레이어 -->
+            <div class="layer2-bg"></div>
+
+            <!-- 3. UI 레이어 -->
+            <div class="layer3-ui">
+                @Body
+            </div>
+        </div>
     </RadzenBody>
 </RadzenLayout>
+
+@code {
+    private string? currentPetImage = null;
+
+    public void SetPetImage(string? b64Url)
+    {
+        currentPetImage = b64Url;
+        StateHasChanged();
+    }
+}

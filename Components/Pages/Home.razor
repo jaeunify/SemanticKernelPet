@@ -1,11 +1,4 @@
 ﻿@page "/"
 @inject PetStorageService PetStorageService
 
-@if (PetStorageService.IsAnyPet())
-{
-
-}
-else
-{
-    <CreatePet />
-}
+<CreatePet />

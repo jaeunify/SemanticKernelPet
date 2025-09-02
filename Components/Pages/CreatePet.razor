@@ -10,7 +10,7 @@
 
         @if (string.IsNullOrWhiteSpace(generatedImageUrl))
         {
-            <p>원하는 펫을 자세히 묘사해주세요. 생성된 펫은 좌측 메뉴에 추가됩니다.</p>
+            <p>원하는 펫을 자세히 묘사해주세요.</p>
             <textarea @bind="petDescription" placeholder="예: 꽃밭에서 놀고 있는 솜털같은 골든 리트리버 강아지" rows="4" class="w-100"></textarea>
             <button class="btn btn-primary mt-2 w-100" @onclick="GeneratePetImage" disabled="@isGenerating">
                 @if (isGenerating)
@@ -37,13 +37,13 @@
                     <input @bind="petName" class="form-control" placeholder="이름" />
                 </div>
                 <div class="col">
-                    <button class="btn btn-primary w-100" @onclick="Adopt" disabled="@isGenerating">입양하기 (Adopt)</button>
+                    <button class="btn btn-primary w-100" @onclick="Adopt" disabled="@isGenerating">입양하기</button>
                 </div>
             </div>
 
             <div class="row mt-2">
                 <div class="col">
-                    <button class="btn btn-secondary w-100" @onclick="Reset" disabled="@isGenerating">다시 만들기 (Regenerate)</button>
+                    <button class="btn btn-secondary w-100" @onclick="Reset" disabled="@isGenerating">다시 만들기</button>
                 </div>
             </div>
         }

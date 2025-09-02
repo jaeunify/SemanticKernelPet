@@ -97,3 +97,61 @@ h1:focus {
     background-attachment: fixed;    /* 고정 */
     min-height: 100vh;               /* 화면 전체 높이 */
 }
+
+/* 레이어 컨테이너: 화면 가운데에 고정된 1024x1231 박스 */
+.layer-container {
+    position: relative;
+    width: 1024px;
+    height: 1231px;
+    margin: 0 auto;        /* 가로 가운데 정렬 */
+}
+
+/* 공통: 레이어는 컨테이너 안에서만 겹침 */
+.layer1-pet,
+.layer2-bg,
+.layer3-ui {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1024px;
+    height: 1231px;
+}
+
+/* 1) 펫 레이어 */
+.layer1-pet {
+    background-color: #000;          /* 기본은 검은색 */
+    position: absolute;
+    top: 12.76%;     /* 157/1231 */
+    left: 41.7%;     /* 427/1024 */
+    width: 48.34%;   /* 495/1024 */
+    height: 39.96%;  /* 492/1231 */
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    z-index: 1;
+}
+.layer1-pet.has-pet {
+    background-color: transparent;
+}
+
+/* 2) 배경 레이어 */
+.layer2-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/Image/background4.png');
+    background-size: cover;
+    z-index: 2;
+}
+
+/* 3) UI 레이어 */
+.layer3-ui {
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    overflow: auto;
+    box-sizing: border-box;
+    /* UI를 컨테이너 안에서만 스크롤 */
+}
