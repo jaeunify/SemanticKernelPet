@@ -88,3 +88,12 @@ h1:focus {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+.bg-layout {
+    background-image: url('/Image/background5.png');
+    background-size: cover;          /* 화면 꽉 채움 */
+    background-repeat: no-repeat;    /* 반복 안 함 */
+    background-position: center;     /* 중앙 배치 */
+    background-attachment: fixed;    /* 고정 */
+    min-height: 100vh;               /* 화면 전체 높이 */
+}

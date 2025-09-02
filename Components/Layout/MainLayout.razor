@@ -6,23 +6,10 @@
 <RadzenTooltip />
 <RadzenContextMenu />
 
-<RadzenLayout>
-    <RadzenHeader>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-    </RadzenHeader>
-    <RadzenSidebar>
-        <NavMenu />
-    </RadzenSidebar>
+<RadzenLayout class="bg-layout">
     <RadzenBody>
-        <article class="content px-4">
+        <article class="content">
             @Body
         </article>
     </RadzenBody>
-    <RadzenFooter>
-        <div class="items-area px-4 py-2">
-            <Items />
-        </div>
-    </RadzenFooter>
 </RadzenLayout>
