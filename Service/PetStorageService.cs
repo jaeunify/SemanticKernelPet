@@ -1,5 +1,3 @@
-using PetService.Entity;
-
 public class PetStorageService
 {
     private readonly Dictionary<string, Pet> _petData = new(); // petName - Pet

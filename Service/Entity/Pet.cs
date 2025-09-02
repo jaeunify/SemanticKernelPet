@@ -1,6 +1,5 @@
 using Microsoft.SemanticKernel.ChatCompletion;
 
-namespace PetService.Entity;
 public class Pet
 {
     public string Name { get; private set; }

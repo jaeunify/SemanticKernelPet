@@ -1,6 +1,5 @@
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
-using PetService.Entity;
 
 public class PetChatService
 {
