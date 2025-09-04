@@ -2,6 +2,8 @@
 
 This project is a pet simulation prototype that uses Microsoft Semantic Kernel to converse with an AI pet and calls the Gemini API directly to generate images. It is built as a Blazor Server web application, serving as both the server and the client.
 
+<img src="/Image.png">
+
 ### Other Language  
 
 - [KR](./README_KR.md)

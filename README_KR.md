@@ -2,6 +2,8 @@
 
 본 프로젝트는 Microsoft Semantic Kernel을 활용하여 AI 펫과 대화하고, Gemini API를 직접 호출하여 이미지를 생성하는 펫 시뮬레이션 프로토타입입니다. Blazor Server 웹 애플리케이션으로 제작되어, 서버와 클라이언트의 역할을 동시에 수행합니다.
 
+<img src="/Image.png">
+
 ### Other Language  
 
 - [ENG](./README.md)
